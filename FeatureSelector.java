@@ -4,7 +4,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 public class FeatureSelector {
-    public static Vector<Vector<String>> data = new Vector<Vector<String>>();
+    public static Vector<Vector<Double>> data = new Vector<Vector<Double>>();
 
     public static void main(String[] args) throws Exception{
 
@@ -15,18 +15,20 @@ public class FeatureSelector {
         int row = 0;
         while((line = reader.readLine()) != null){
             String[] lineArray = line.split(" ");   //splits the line into string array
-            Vector<String> lineVector = new Vector<>();   //converts string array to vectors
+            Vector<Double> lineVector = new Vector<>();   //converts string array to vectors
             for(int i=0; i<lineArray.length; ++i){
-                lineVector.add(lineArray[i]);
+                if(!lineArray[i].equals(""))
+                    lineVector.add(Double.parseDouble(lineArray[i]));
             }
             data.add(lineVector);
         }
 
         for(int i =0; i< data.size(); i++){
-            Vector<String> dataLine = data.get(i);
+            Vector<Double> dataLine = data.get(i);
             for(int j=0; j<dataLine.size(); j++){
                 System.out.print(dataLine.get(j) + " ");
             }
+//            System.out.print(dataLine.get(1) + 1);
             System.out.println();
         }
 
@@ -108,6 +110,11 @@ public class FeatureSelector {
         return correctTests/ features.size();
     }
 
+    public static double calcDist(Vector<Double> first, Vector<Double> second){
+        if(first.size() != second.size())
+            return -1;
+        return 0;
+    }
 }
 
 
