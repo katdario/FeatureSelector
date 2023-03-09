@@ -4,17 +4,38 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 
 public class FeatureSelector {
-    Vector<Vector<String>> data = new Vector<Vector<String>>();
+    public static Vector<Vector<String>> data = new Vector<Vector<String>>();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
 
         String fileName = "small-test-dataset.txt";
-
-        Vector<String> features = new Vector<>();
-        for(int i=1; i<=4; i++){
-            features.add(String.valueOf(i));
+        File file = new File(fileName);
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+        String line;
+        int row = 0;
+        while((line = reader.readLine()) != null){
+            String[] lineArray = line.split(" ");   //splits the line into string array
+            Vector<String> lineVector = new Vector<>();   //converts string array to vectors
+            for(int i=0; i<lineArray.length; ++i){
+                lineVector.add(lineArray[i]);
+            }
+            data.add(lineVector);
         }
-        Node best = greedySearch(features);
+
+        for(int i =0; i< data.size(); i++){
+            Vector<String> dataLine = data.get(i);
+            for(int j=0; j<dataLine.size(); j++){
+                System.out.print(dataLine.get(j) + " ");
+            }
+            System.out.println();
+        }
+
+
+//        Vector<String> features = new Vector<>();
+//        for(int i=1; i<=4; i++){
+//            features.add(String.valueOf(i));
+//        }
+//        Node best = greedySearch(features);
     }
 
     //=============================================
