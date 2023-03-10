@@ -11,7 +11,8 @@ public class Node {
     Random rand = new Random();
 
     public Node(){
-        accuracy = rangeMin + (rangeMax - rangeMin) * rand.nextDouble();
+//        accuracy = rangeMin + (rangeMax - rangeMin) * rand.nextDouble();
+        accuracy = 0.0001;
     }
 
     public Node(Vector<String> newFeatures){
