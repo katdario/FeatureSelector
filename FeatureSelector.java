@@ -8,8 +8,8 @@ public class FeatureSelector {
     public static Vector<Vector<Double>> data = new Vector<Vector<Double>>();
 
     public static void main(String[] args) throws Exception{
-//        String fileName = "small-test-dataset.txt";
-        String fileName = "Large-test-dataset.txt";
+        String fileName = "small-test-dataset.txt";
+//        String fileName = "Large-test-dataset.txt";
 //        String fileName = "CS170_Spring_2022_Large_data__20.txt";
 //        String fileName = "CS170_Spring_2022_Small_data__20.txt";
 
@@ -36,20 +36,38 @@ public class FeatureSelector {
 //            System.out.println();
 //        }
 
-
+        //Having string values of features {1,2,3,4, ... , n}
         Vector<String> features = new Vector<>();
         int numFeatures = data.get(0).size() - 1;
         for(int i=1; i<=numFeatures; i++){
             features.add(String.valueOf(i));
         }
-        Node best = greedySearch(features);
+
+        System.out.println("Type the number of algorithm you want to run: ");
+        System.out.println("1. Forward Selection");
+        System.out.println("2. Backward Elimination");
+        System.out.print("\nYour choice: ");
+        Scanner in = new Scanner(System.in);
+        int choice = Integer.parseInt(in.nextLine());
+        Node best;
+        if(choice == 1)
+            best = greedyForwardSearch(features);
+        else
+            best = greedyBackwardsSearch(features);
+//        Node best = greedyForwardSearch(features);
+
+        DecimalFormat decFor = new DecimalFormat("0.0");
+        decFor.setRoundingMode(RoundingMode.UP);
+        System.out.print("Finished Search!! The best feature subset is ");
+        best.printFeatures();
+        System.out.println(", which has an accuracy of " + decFor.format(best.getAccuracy()) + "%");
     }
 
     //=============================================
-    // Greedy Search
+    // Greedy Search - Forward
     //=============================================
 
-    public static Node greedySearch(Vector<String> features){
+    public static Node greedyForwardSearch(Vector<String> features){
         Node state = new Node();
         Node bestFeatureSet = new Node();
         DecimalFormat decFor = new DecimalFormat("0.0");
@@ -60,19 +78,17 @@ public class FeatureSelector {
         System.out.println("\nBeginning search.\n");
 
         for(int i=0; i< features.size(); ++i){
-            state = greedyChoice(state, features);
+            state = greedyForwardChoice(state, features);
             if(state.getAccuracy() > bestFeatureSet.getAccuracy()){
                 bestFeatureSet = state;
             }
         }
 
-        System.out.print("Finished Search!! The best feature subset is ");
-        bestFeatureSet.printFeatures();
-        System.out.println(", which has an accuracy of " + decFor.format(bestFeatureSet.getAccuracy()) + "%");
+
         return bestFeatureSet;
     }
 
-    public static Node greedyChoice(Node state, Vector<String> allFeatures){
+    public static Node greedyForwardChoice(Node state, Vector<String> allFeatures){
         Node choice = new Node();
         double bestAccuracy = 0;
 
@@ -107,6 +123,74 @@ public class FeatureSelector {
         System.out.println(" was best, with accuracy of " + decFor.format(choice.getAccuracy()) + "%\n");
         return choice;
     }
+
+    //=============================================
+    // Greedy Search - Backwards
+    //=============================================
+
+    public static Node greedyBackwardsSearch(Vector<String> features){
+        Node bestFeatures = new Node(features);
+        Node state = new Node(features);
+        state.updateAccuracy(calcAccuracy(state.getFeatures()));
+        double bestAccuracy = state.getAccuracy();
+        DecimalFormat decFor = new DecimalFormat("0.0");    //used to format doubles
+        decFor.setRoundingMode(RoundingMode.UP); //used to round up the accuracy
+
+        System.out.println("\nBeginning search.\n");
+
+        System.out.print("Features ");
+        state.printFeatures();
+        System.out.println(" accuracy is " + decFor.format(state.getAccuracy()) + "%\n");
+
+        while((state.getFeatures().size() != 0)){
+            double stateAcc = state.getAccuracy();
+            if(stateAcc > bestAccuracy){
+                bestFeatures = state;
+                bestAccuracy = stateAcc;
+            }
+            state = greedyBackwardsChoice(state.getFeatures());
+        }
+        return bestFeatures;
+    }
+
+    public static Node greedyBackwardsChoice(Vector<String> initialFeatures){
+        Node initialNode = new Node(initialFeatures);
+        Node bestNode = new Node();
+        Vector<String> currentFeatures;
+        double bestAccuracy = 0;
+        double currentAccuracy;
+        DecimalFormat decFor = new DecimalFormat("0.0");    //used to format doubles
+        decFor.setRoundingMode(RoundingMode.UP); //used to round up the accuracy
+
+        if(initialFeatures.size() == 1)
+            return bestNode;
+        for(int i=0; i<initialFeatures.size(); i++){
+            //create a new node with feature i removed
+//            Node state = new Node(initialFeatures);
+            currentFeatures = initialNode.getFeatures();
+            currentFeatures.remove(i);
+            Node state = new Node(currentFeatures);
+            currentAccuracy = calcAccuracy(currentFeatures);
+            state.updateAccuracy(currentAccuracy);
+
+            if(currentAccuracy > bestAccuracy){
+                bestNode = state;
+                bestAccuracy = currentAccuracy;
+            }
+
+            //print
+            System.out.print("Using features ");
+            state.printFeatures();
+            System.out.println(" accuracy is " + decFor.format(state.getAccuracy()) + "%");
+        }
+
+        System.out.print("\nFeature set ");
+        bestNode.printFeatures();
+        System.out.println(" was best, with accuracy of " + decFor.format(bestAccuracy) + "%\n");
+
+        return bestNode;
+    }
+
 
     //=============================================
     // Accuracy calculations
