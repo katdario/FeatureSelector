@@ -8,8 +8,8 @@ public class FeatureSelector {
     public static Vector<Vector<Double>> data = new Vector<Vector<Double>>();
 
     public static void main(String[] args) throws Exception{
-        String fileName = "small-test-dataset.txt";
-//        String fileName = "Large-test-dataset.txt";
+//        String fileName = "small-test-dataset.txt";
+        String fileName = "Large-test-dataset.txt";
 //        String fileName = "CS170_Spring_2022_Large_data__20.txt";
 //        String fileName = "CS170_Spring_2022_Small_data__20.txt";
 
@@ -26,7 +26,10 @@ public class FeatureSelector {
             data.add(lineVector);
         }
 
-        //prints the dataset
+        normalize();
+        System.out.println("Number of features: " + (data.get(0).size()-1));
+        System.out.println("Number of instances: " + data.size());
+//        //prints the dataset
 //        for(int i =0; i< data.size(); i++){
 //            Vector<Double> dataLine = data.get(i);
 //            for(int j=0; j<dataLine.size(); j++){
@@ -36,31 +39,31 @@ public class FeatureSelector {
 //            System.out.println();
 //        }
 
-        //Having string values of features {1,2,3,4, ... , n}
-        Vector<String> features = new Vector<>();
-        int numFeatures = data.get(0).size() - 1;
-        for(int i=1; i<=numFeatures; i++){
-            features.add(String.valueOf(i));
-        }
-
-        System.out.println("Type the number of algorithm you want to run: ");
-        System.out.println("1. Forward Selection");
-        System.out.println("2. Backward Elimination");
-        System.out.print("\nYour choice: ");
-        Scanner in = new Scanner(System.in);
-        int choice = Integer.parseInt(in.nextLine());
-        Node best;
-        if(choice == 1)
-            best = greedyForwardSearch(features);
-        else
-            best = greedyBackwardsSearch(features);
-//        Node best = greedyForwardSearch(features);
-
-        DecimalFormat decFor = new DecimalFormat("0.0");
-        decFor.setRoundingMode(RoundingMode.UP);
-        System.out.print("Finished Search!! The best feature subset is ");
-        best.printFeatures();
-        System.out.println(", which has an accuracy of " + decFor.format(best.getAccuracy()) + "%");
+//        //Having string values of features {1,2,3,4, ... , n}
+//        Vector<String> features = new Vector<>();
+//        int numFeatures = data.get(0).size() - 1;
+//        for(int i=1; i<=numFeatures; i++){
+//            features.add(String.valueOf(i));
+//        }
+//
+//        System.out.println("Type the number of algorithm you want to run: ");
+//        System.out.println("1. Forward Selection");
+//        System.out.println("2. Backward Elimination");
+//        System.out.print("\nYour choice: ");
+//        Scanner in = new Scanner(System.in);
+//        int choice = Integer.parseInt(in.nextLine());
+//        Node best;
+//        if(choice == 1)
+//            best = greedyForwardSearch(features);
+//        else
+//            best = greedyBackwardsSearch(features);
+////        Node best = greedyForwardSearch(features);
+//
+//        DecimalFormat decFor = new DecimalFormat("0.0");
+//        decFor.setRoundingMode(RoundingMode.UP);
+//        System.out.print("Finished Search!! The best feature subset is ");
+//        best.printFeatures();
+//        System.out.println(", which has an accuracy of " + decFor.format(best.getAccuracy()) + "%");
     }
 
     //=============================================
@@ -268,6 +271,40 @@ public class FeatureSelector {
         }
 
         return Math.sqrt(sum);
+    }
+
+    //=============================================
+    // Normalization of data
+    //=============================================
+
+    public static void normalize(){
+        int numFeatures = data.get(0).size() - 1;
+        for(int i=1; i<=numFeatures; i++){
+            double sum = 0;
+            double mean;
+            double stdDev;
+            double squaredNumSum = 0;
+            int instanceNum = data.size();
+
+            //calculate mean in this row
+            for(int row = 0; row < instanceNum; ++row){
+                sum += data.get(row).get(i);
+            }
+            mean = sum / instanceNum;
+
+            //calculate standard deviation in this row
+            for(int row = 0; row < instanceNum; ++row){
+                squaredNumSum += Math.pow(data.get(row).get(i) - mean, 2);
+            }
+            stdDev = Math.sqrt(squaredNumSum/instanceNum);
+
+            //normalize
+            for(int row = 0; row < instanceNum; ++row){
+                Double instance = data.get(row).get(i);
+                Double newValue = (instance - mean)/stdDev;
+                data.get(row).set(i,newValue) ;
+            }
+        }
     }
 }
 
