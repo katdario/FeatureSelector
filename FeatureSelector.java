@@ -9,9 +9,9 @@ public class FeatureSelector {
 
     public static void main(String[] args) throws Exception{
 //        String fileName = "small-test-dataset.txt";
-        String fileName = "Large-test-dataset.txt";
+//        String fileName = "Large-test-dataset.txt";
 //        String fileName = "CS170_Spring_2022_Large_data__20.txt";
-//        String fileName = "CS170_Spring_2022_Small_data__20.txt";
+        String fileName = "CS170_Spring_2022_Small_data__20.txt";
 
         File file = new File(fileName);
         BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -27,43 +27,43 @@ public class FeatureSelector {
         }
 
         normalize();
-        System.out.println("Number of features: " + (data.get(0).size()-1));
-        System.out.println("Number of instances: " + data.size());
+
 //        //prints the dataset
 //        for(int i =0; i< data.size(); i++){
 //            Vector<Double> dataLine = data.get(i);
-//            for(int j=0; j<dataLine.size(); j++){
-//                System.out.print(dataLine.get(j) + " ");
-//            }
-////            System.out.print(dataLine.get(1) );    //sample of how to get specific column
+////            for(int j=0; j<dataLine.size(); j++){
+////                System.out.print(dataLine.get(j) + "\t");
+////            }
+//            System.out.print(dataLine.get(0) + "\t");
+//            System.out.print(dataLine.get(5) + "\t");    //sample of how to get specific column
+//            System.out.print(dataLine.get(10));
 //            System.out.println();
 //        }
 
-//        //Having string values of features {1,2,3,4, ... , n}
-//        Vector<String> features = new Vector<>();
-//        int numFeatures = data.get(0).size() - 1;
-//        for(int i=1; i<=numFeatures; i++){
-//            features.add(String.valueOf(i));
-//        }
-//
-//        System.out.println("Type the number of algorithm you want to run: ");
-//        System.out.println("1. Forward Selection");
-//        System.out.println("2. Backward Elimination");
-//        System.out.print("\nYour choice: ");
-//        Scanner in = new Scanner(System.in);
-//        int choice = Integer.parseInt(in.nextLine());
-//        Node best;
-//        if(choice == 1)
-//            best = greedyForwardSearch(features);
-//        else
-//            best = greedyBackwardsSearch(features);
-////        Node best = greedyForwardSearch(features);
-//
-//        DecimalFormat decFor = new DecimalFormat("0.0");
-//        decFor.setRoundingMode(RoundingMode.UP);
-//        System.out.print("Finished Search!! The best feature subset is ");
-//        best.printFeatures();
-//        System.out.println(", which has an accuracy of " + decFor.format(best.getAccuracy()) + "%");
+        //Having string values of features {1,2,3,4, ... , n}
+        Vector<String> features = new Vector<>();
+        int numFeatures = data.get(0).size() - 1;
+        for(int i=1; i<=numFeatures; i++){
+            features.add(String.valueOf(i));
+        }
+
+        System.out.println("Type the number of algorithm you want to run: ");
+        System.out.println("1. Forward Selection");
+        System.out.println("2. Backward Elimination");
+        System.out.print("\nYour choice: ");
+        Scanner in = new Scanner(System.in);
+        int choice = Integer.parseInt(in.nextLine());
+        Node best;
+        if(choice == 1)
+            best = greedyForwardSearch(features);
+        else
+            best = greedyBackwardsSearch(features);
+
+        DecimalFormat decFor = new DecimalFormat("0.0");
+        decFor.setRoundingMode(RoundingMode.UP);
+        System.out.print("Finished Search!! The best feature subset is ");
+        best.printFeatures();
+        System.out.println(", which has an accuracy of " + decFor.format(best.getAccuracy()) + "%");
     }
 
     //=============================================
